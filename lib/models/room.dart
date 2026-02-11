@@ -1,11 +1,26 @@
 class Room {
-  // TODO: Aggiungi qui le variabili della classe
-  // Suggerimento: guarda la struttura JSON nel README.md
+  int id;
+  String nomeStanza;
+  String tipologia;
+  int prezzoNotte;
+  int postiLetto;
+  List<String> servizi;
+  bool disponibile;
+  String urlImage;
 
-  Room() {
-    // TODO: Inizializza le variabili della classe usando i parametri del costruttore
-  }
+  // Costruttore
+  Room({
+    required this.id,
+    required this.nomeStanza,
+    required this.tipologia,
+    required this.prezzoNotte,
+    required this.postiLetto,
+    required this.servizi,
+    required this.disponibile,
+    required this.urlImage,
+  });
 
+  // Factory per creare oggetto da JSON
   factory Room.fromJson(Map<String, dynamic> json) {
     return Room(
       id: json['id'],
@@ -15,7 +30,7 @@ class Room {
       postiLetto: json['posti_letto'],
       servizi: List<String>.from(json['servizi']),
       disponibile: json['disponibile'],
-      urlImmagine: json['url_immagine'],
+      urlImage: json['url_immagine'],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_login_profile_lesson/models/room.dart';
 
 /// Servizio responsabile di tutte le chiamate di rete (HTTP).
 /// Utilizza il pacchetto [dio] che è molto potente per gestire le API.
@@ -54,16 +55,18 @@ class ApiService {
   }
 
   /// Recupera la lista di tutte le stanze disponibili.
-  Future<List<Map<String, dynamic>>> getRooms() async {
+  Future<List<Room>> getRooms() async {
     try {
       final response = await _dio.get('/Exam1');
+      
 
       if (response.statusCode == 200) {
         // L'API restituisce un array con un oggetto che contiene la chiave "rooms"
         final List<dynamic> data = response.data;
         if (data.isNotEmpty && data[0]['rooms'] != null) {
           final List<dynamic> rooms = data[0]['rooms'];
-          return rooms.cast<Map<String, dynamic>>();
+          
+          return rooms.map((json) => Room.fromJson(json)).toList();
         }
         return [];
       }
