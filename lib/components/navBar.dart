@@ -22,12 +22,18 @@ class _NavbarState extends State<Navbar> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(Icons.favorite, color: Color.fromARGB(255, 69, 153, 111), size: 28),
+            Icon(
+              Icons.favorite,
+              color: Color.fromARGB(255, 69, 153, 111),
+              size: 28,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/home");
+                  },
                   child: Text(
                     "Home",
                     style: TextStyle(
@@ -37,7 +43,9 @@ class _NavbarState extends State<Navbar> {
                   ),
                 ),
                 TextButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/signup");
+                  },
                   child: Text(
                     "Blog",
                     style: TextStyle(
@@ -72,7 +80,9 @@ class _NavbarState extends State<Navbar> {
             ),
             ElevatedButton(
               onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor:  Color.fromARGB(255, 69, 153, 111)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 69, 153, 111),
+              ),
               child: Text("Sign Up", style: TextStyle(color: Colors.white)),
             ),
           ],

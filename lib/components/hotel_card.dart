@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_login_profile_lesson/models/room.dart';
 import 'package:flutter_login_profile_lesson/services/api_service.dart';
 
@@ -12,16 +13,33 @@ class HotelCardCarousel extends StatefulWidget {
 class _HotelCardCarouselState extends State<HotelCardCarousel> {
   List<Room> _rooms = [];
   bool _loading = true;
-  int _currentIndex = 1;
-  final CarouselController _controller = CarouselController(initialItem: 4);
-  
+  int _currentIndex = 0;
+  late CarouselController _controller;
+
+  void next(int maxLength) {
+    if (_currentIndex < maxLength - 1) {
+      setState(() {
+        _currentIndex++;
+        _controller.animateToItem(_currentIndex);
+      });
+    }
+  }
+
+  void prev() {
+    if (_currentIndex > 0) {
+      setState(() {
+        _currentIndex--;
+        _controller.animateToItem(_currentIndex);
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _controller = CarouselController(initialItem: _currentIndex);
     loadRooms();
   }
-
 
   Future<void> loadRooms() async {
     final result = await ApiService().getRooms();
@@ -52,16 +70,23 @@ class _HotelCardCarouselState extends State<HotelCardCarousel> {
       height: 400,
       child: Stack(
         children: [
-          
           Center(
             child: Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return CarouselView.weighted(
                     controller: _controller,
-                    flexWeights: [1, 3, 1],
+                    flexWeights: /* _currentIndex == _rooms.length -1
+                        ? [2, 3]
+                        : _currentIndex > 0
+                        ? [1, 3, 1]
+                        : [3, 2], ho provato a lasciarlo così ma si bugga*/ [
+                      1,
+                      3,
+                      1,
+                    ],
                     itemSnapping: true,
-                    
+
                     children: _rooms.map((room) {
                       return Stack(
                         fit: StackFit.expand,
@@ -81,7 +106,16 @@ class _HotelCardCarouselState extends State<HotelCardCarousel> {
                               },
                             ),
                           ),
-                                    
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: const LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [Colors.black87, Colors.transparent],
+                              ),
+                            ),
+                          ),
                           Positioned(
                             bottom: 20,
                             left: 20,
@@ -104,10 +138,26 @@ class _HotelCardCarouselState extends State<HotelCardCarousel> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     SizedBox(width: 10),
-                                    Icon(Icons.star, color: Colors.amber, size: 18),
-                                    Icon(Icons.star, color: Colors.amber, size: 18),
-                                    Icon(Icons.star, color: Colors.amber, size: 18),
-                                    Icon(Icons.star, color: Colors.amber, size: 18),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
                                     Icon(
                                       Icons.star_border,
                                       color: Colors.amber,
@@ -131,8 +181,43 @@ class _HotelCardCarouselState extends State<HotelCardCarousel> {
               ),
             ),
           ),
-          Positioned(left: 0 , bottom: 160, child: IconButton(onPressed: null, icon: Icon(Icons.arrow_left, size: 80, color: const Color.fromARGB(255, 39, 38, 38),)) ),
-          Positioned(right: 0 , bottom: 160, child: IconButton(onPressed: null, icon: Icon(Icons.arrow_right, size: 80, color: const Color.fromARGB(255, 37, 37, 37),)) ),
+          Positioned(
+            left: 0,
+            bottom: 160,
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(178, 158, 158, 158),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: IconButton(
+                onPressed: () => prev(),
+                icon: Icon(
+                  Icons.arrow_left,
+                  size: 40,
+                  color: const Color.fromARGB(255, 39, 38, 38),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 160,
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(178, 158, 158, 158),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: IconButton(
+                onPressed: () => next(_rooms.length),
+
+                icon: Icon(
+                  Icons.arrow_right,
+                  size: 40,
+                  color: const Color.fromARGB(255, 37, 37, 37),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
